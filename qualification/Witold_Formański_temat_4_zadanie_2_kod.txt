@@ -1,0 +1,55 @@
+% Witold Formański
+% zadanie 2.
+% wykonałem zadanie w programie MatLab, więc proszę przekleić poniższy kod do kompilatora na stronie: https://matlab.mathworks.com/
+
+% zadawane parametry:
+
+k = 10
+m0 = 0.7
+
+% warunek m0 + m1 = 1:
+
+m1 = 1 - m0
+
+% tworzę macierz:
+% - której wartości odpowiadają miarom (masom) danych odcinków
+% - w której każdemu kolejnemu wierszowi odpowiada kolejny krok
+% - w której liczba wartości różnych od 0 w wierszu odpowiada liczbie odcinków w danym kroku
+% - o ilości wierszy równej k+1 (ponieważ potrzebuję kroku zerowego i k kolejnych)
+% - o ilości kolumn równej 2^k (ponieważ na tyle odcinków podzielony zostanie odcinek początkowy)
+% - nazwaną u z niemożności użycia greckiej litery mikro
+
+u = zeros(k+1, 2^k)
+
+% w kroku zerowym odcinek [0,1] ma miarę 1:
+
+u(1,1) = 1
+
+% przeprowadzam iterację, działając zgodnie z instrukcją z polecenia:
+
+for row = 1:k
+    for i = 1:2^(row-1)
+        u(row+1,2*i-1) = u(row,i) * m1; %0.3
+        u(row+1,2*i) = u(row,i) * m0; %0.7
+    end
+end
+
+% dla zadanej wartości parametru k ważny jest jedynie ostatni wiersz powyższej macierzy:
+
+u_last_row = zeros(1, 2^k)
+
+for i = 1:2^k
+    u_last_row(i) = u(k+1, i);
+end
+
+% uzyskałem zbiór wartości uszeregowanych w odpowiedniej kolejności
+
+% tworzę zbiór argumentów, będący środkami kolejnych 2^k odcinków powstałych w wyniku podziału odcinka [0,1]:
+
+arg = 2^(-k-1):2^(-k):(1-2^(-k-1))
+
+% rysuję wykres słupkowy, w którym słupki przylegają do siebie (ich szerokość to 1), dodaję tytuł i legendę:
+
+bar(arg, u_last_row, 1)
+title('Kaskada multiplikatywna')
+legend(['k = ' num2str(k)])
